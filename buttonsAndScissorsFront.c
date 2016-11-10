@@ -228,12 +228,13 @@ int pedirDim(){
 
     int nivel[2]={0};
     scanf("%d%c",&nivel[0],&nivel[1]);
-
+	
     while ( nivel[0]<5 || nivel[0]>30 || nivel[1]!='\n')
     {
-        fflush(stdin);
+        
         printf("\nNivel incorrecto, ingrese un nivel valido: ");
         scanf("%d%c",&nivel[0],&nivel[1]);
+		BORRA_BUFFER;
     }
 
     return nivel[0];
