@@ -11,10 +11,6 @@ int pedirDim();
 void quit(tPartida *partida);
 
 
-
-
-
-
 void abrirPartida(tMovimiento *movimiento,tPartida *partida)
 {
     int resp=2;
@@ -31,14 +27,14 @@ void abrirPartida(tMovimiento *movimiento,tPartida *partida)
 void dosplayers(tMovimiento *movimiento,tPartida* partida)
 {
     int hayplay,botones=0,invmov=0,com=2;
-    partida->jugadores=1;
+    partida->jugadores=0;
     partida->turno=aleatorio(1,2);
     ImprimirTablero(partida);
     hayplay=HayJugada(partida->dim,partida->tablero);
     while(hayplay==0)
     {
-      com = ingrese_comando(movimiento,partida);
-      invmov=InvalidMove(partida,movimiento);
+    com = ingrese_comando(movimiento,partida);
+    invmov=InvalidMove(partida,movimiento);
 
         while (invmov!=0 && com==0)
         {
@@ -64,7 +60,6 @@ void dosplayers(tMovimiento *movimiento,tPartida* partida)
               partida->turno=1;
             }
         }
-        ImprimirTablero(partida);
         hayplay=HayJugada(partida->dim,partida->tablero);
     }
     if(partida->turno==1)
@@ -74,8 +69,8 @@ void dosplayers(tMovimiento *movimiento,tPartida* partida)
     menu();
 }
 
-void errores(int a){
-
+void errores(int a)
+{
     switch(a){
         case(1):printf("Posicion inicial invalida.\n");
                 break;
@@ -170,7 +165,8 @@ int ingrese_comando(tMovimiento * movimiento, tPartida *partida)
   return 0;
 }
 
-void menu(){
+void menu()
+{
     int opcion[2]={0},hayarchivo=0;
     char *nombrearchivo=malloc(sizeof(char)*20);
     tPartida *partida=malloc(sizeof(tPartida));
@@ -178,7 +174,7 @@ void menu(){
     printf("Menu Principal\n1.Juego de dos jugadores\n2.Juego contra computadora\n3.Recuperar un juego grabado\n4.Terminar\n\n");
     printf("Ingrese la opcion: ");
     scanf("%d%c",&opcion[0],&opcion[1]);
-	while (opcion[0]<1 || opcion[0]>4 || opcion[1]!='\n')
+    while (opcion[0]<1 || opcion[0]>4 || opcion[1]!='\n')
     {
         BORRA_BUFFER;//problemas
         printf("\nOpcion incorrecta, ingrese opcion valida: ");
@@ -212,7 +208,6 @@ void menu(){
                 }
                 partida->ptsjug1=0;
                 partida->ptsjug2=0;
-                printf("jugadores=%d",partida->jugadores);
                 if(partida->jugadores==0)
                 {
                     dosplayers(movimiento,partida);
@@ -224,23 +219,23 @@ void menu(){
     }
 }
 
-int pedirDim(){
-
+int pedirDim()
+{
     int nivel[2]={0};
     scanf("%d%c",&nivel[0],&nivel[1]);
-	
+    
     while ( nivel[0]<5 || nivel[0]>30 || nivel[1]!='\n')
-    {
-        
+    {        
         printf("\nNivel incorrecto, ingrese un nivel valido: ");
         scanf("%d%c",&nivel[0],&nivel[1]);
-		BORRA_BUFFER;
+        BORRA_BUFFER;
     }
 
     return nivel[0];
 }
 
-void quit(tPartida *partida){
+void quit(tPartida *partida)
+{
     char*nombre_partida=malloc(sizeof(char));
     int rta,rta2,error=0,error2=0;
     printf("Esta seguro que quiere salir (Y/N)? ");
@@ -263,6 +258,7 @@ void quit(tPartida *partida){
                     scanf("%s",nombre_partida);
                     GuardarPartida(nombre_partida,partida);
                     printf("Su partida se guardo exitosmente....gracias por jugar.\n\n");
+                    exit(9);
 
                 }
                 else if('N'==toupper(rta2))
