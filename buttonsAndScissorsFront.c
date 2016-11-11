@@ -8,7 +8,7 @@ void ImprimirTablero(tPartida* partida);
 int ingrese_comando(tMovimiento * movimiento, tPartida *partida);
 void menu();
 int pedirDim();
-void quit(tPartida *partida);
+void quit(tMovimiento *movimiento,tPartida *partida);
 
 
 void abrirPartida(tMovimiento *movimiento,tPartida *partida)
