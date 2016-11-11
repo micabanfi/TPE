@@ -149,7 +149,7 @@ int ingrese_comando(tMovimiento * movimiento, tPartida *partida)
             }
             else if (strncmp(comando, "quit", 4)==0)
             {
-                quit(partida);
+                quit(movimiento, partida);
                 return 1;
             }
             else if((sscanf(comando,"[%d,%d][%d,%d]%s", &movimiento->F1, &movimiento->C1, &movimiento->F2, &movimiento->C2))==4)
