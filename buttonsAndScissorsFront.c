@@ -29,13 +29,12 @@ void dosplayers(tMovimiento *movimiento,tPartida* partida)
     int hayplay,botones=0,invmov=0,com=2;
     partida->jugadores=0;
     partida->turno=aleatorio(1,2);
-    ImprimirTablero(partida);
     hayplay=HayJugada(partida->dim,partida->tablero);
     while(hayplay==0)
     {
     com = ingrese_comando(movimiento,partida);
     invmov=InvalidMove(partida,movimiento);
-
+    ImprimirTablero(partida);
         while (invmov!=0 && com==0)
         {
             errores(invmov);
@@ -61,6 +60,7 @@ void dosplayers(tMovimiento *movimiento,tPartida* partida)
             }
         }
         hayplay=HayJugada(partida->dim,partida->tablero);
+        ImprimirTablero(partida);
     }
     if(partida->turno==1)
         printf("\n\nFELICITACIONES JUGADOR 2,HAS GANADO!!\n\n");
