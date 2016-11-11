@@ -223,9 +223,9 @@ int pedirDim()
 {
     int nivel[2]={0};
     scanf("%d%c",&nivel[0],&nivel[1]);
-    
+
     while ( nivel[0]<5 || nivel[0]>30 || nivel[1]!='\n')
-    {        
+    {
         printf("\nNivel incorrecto, ingrese un nivel valido: ");
         scanf("%d%c",&nivel[0],&nivel[1]);
         BORRA_BUFFER;
@@ -234,26 +234,31 @@ int pedirDim()
     return nivel[0];
 }
 
-void quit(tPartida *partida)
+
+void quit(tMovimiento *movimiento,tPartida *partida)
 {
     char*nombre_partida=malloc(sizeof(char));
-    int rta,rta2,error=0,error2=0;
+    int error=0,error2=0;
+    char c,d;
     printf("Esta seguro que quiere salir (Y/N)? ");
-    rta=getchar();
     while(error==0)
     {
-        if ('Y'==toupper(rta))
+
+        c=getchar();
+        d=getchar();
+
+        if ('Y'==toupper(c) && '\n'==d)
         {
             printf("Desea guardar la partida antes de salir (Y/N)? ");
-            BORRA_BUFFER;
             error=1;
-            rta2=getchar();
             while(error2==0)
             {
-                if('Y'==toupper(rta2))
+
+                c=getchar();
+                d=getchar();
+                if('Y'==toupper(c) && '\n'==d)
                 {
                     printf("Ingrese el nombre del archivo: ");
-                    BORRA_BUFFER;
                     error2=1;
                     scanf("%s",nombre_partida);
                     GuardarPartida(nombre_partida,partida);
@@ -261,32 +266,30 @@ void quit(tPartida *partida)
                     exit(9);
 
                 }
-                else if('N'==toupper(rta2))
+                else if('N'==toupper(c) && '\n'==d)
                 {
                     error2=1;
-                    printf("Saliendo....gracias por jugar.\n\n");
+                    printf("\nSaliendo....gracias por jugar.\n\n");
                     exit(9);
                 }
                 else
                 {
                     BORRA_BUFFER;
-                    printf("Ingrese una opcion correcta: ");
-                    rta2=getchar();
+                    printf("Ingrese una opcion correcta(Y/N): ");
                 }
             }
 
         }
-        else if ('N'==toupper(rta))
+        else if ('N'==toupper(c) && '\n'==d)
         {
             error=1;
-            BORRA_BUFFER;
-            //ingrese_comando();
+            ingrese_comando(movimiento,partida);
         }
         else
         {
             BORRA_BUFFER;
-            printf("Ingrese una opcion correcta: ");
-            rta=getchar();
+            printf("Ingrese una opcion correcta(Y/N): ");
+
         }
     }
 }
