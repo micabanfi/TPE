@@ -102,32 +102,39 @@ void errores(int a)
 void ImprimirTablero(tPartida* partida)
 {
     printf("\n\n");
-    printf("Botones J1: %d, J2: %d  \n",partida->ptsjug1,partida->ptsjug2);
-    printf("\n\n/");
-    for (int k = 0; k < (partida->dim); ++k)
-        printf("         ");
-    printf("\\\n\n");
+    printf("Botones J1: %d, J2: %d  \n\n\n\t\t",partida->ptsjug1,partida->ptsjug2);
 
+//Graduacion de columnas
+    for (int i = 0; i < partida->dim; ++i)
+        printf("(%d)\t", i);
+
+//Esquinas superiores
+    printf("\n\n\n\n\t/");
+    for (int k = 0; k < (partida->dim); ++k)
+        printf("\t");
+    printf("\t\\\n\n");
 
     for (int i = 0; i < partida->dim; ++i)
     {
+        printf("(%d)\t", i);
         for (int j = 0; j < partida->dim; ++j)
         {
             if (partida->tablero[i][j] == '0')
-                printf("    %c    ", ' ');
+                printf("\t %c", ' ');
             else
-                printf("    %c    ", partida->tablero[i][j]);
+                printf("\t %c", partida->tablero[i][j]);
         }
         if (i < partida->dim-1)
             printf("\n\n\n");
         printf("\n");
     }
 
-    printf("\n\\");
+//Esquinas inferiores
+    printf("\n\t\\");
     for (int k = 0; k < (partida->dim); ++k)
-        printf("         ");
-    printf("/\n\n");
-
+        printf("\t");
+    printf("\t/\n\n");
+    
     printf("Turno jugador %d \n",partida->turno);
 }
 
