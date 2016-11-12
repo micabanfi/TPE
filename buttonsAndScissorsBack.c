@@ -263,18 +263,19 @@ int InvalidMove(tPartida* partida, tMovimiento* coordenadas)
      if (mx != 0     &&      my != 0     &&      abs(my/mx) != 1)
        return 5;
 
-
     //Blocked
+     if (partida->tablero[coordenadas->F1][coordenadas->C1] != partida->tablero[coordenadas->F2][coordenadas->C2])
+       return 6;
+
      int x;
      int y;
      int dx = (mx < 0)? -1 : (mx > 0);
      int dy = (my < 0)? -1 : (my > 0);
-
-     for (x = coordenadas->F1, y = coordenadas->C1;    (x != (coordenadas->F2)) || (y != (coordenadas->C2))      ;     x += dx, y += dy   )
+     
+     for (x = coordenadas->F1, y = coordenadas->C1;    (x != (coordenadas->F2)) || (y != (coordenadas->C2))     ;     x += dx, y += dy   )
          {
          if (partida->tablero[coordenadas->F1][coordenadas->C1] != partida->tablero[x][y]   &&  partida->tablero[x][y] != '0')
            return 6;
          }
     return 0;
 }
-
