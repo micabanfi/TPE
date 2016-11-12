@@ -43,6 +43,8 @@ void GuardarPartida( const char* filename, tPartida* partida);//
 int hacerjugada(tPartida *partida,tMovimiento * movimiento );//
 int HayJugada(int N, char **tablero);//
 int InvalidMove(tPartida* partida, tMovimiento* coordenadas);//
+void MovPc(tPartida *partida, tMovimiento * movimiento);
+
 
 
 
