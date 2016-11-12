@@ -26,25 +26,34 @@ void abrirPartida(tMovimiento *movimiento,tPartida *partida)
 
 void dosplayers(tMovimiento *movimiento,tPartida* partida)
 {
-    int hayplay,botones=0,invmov=0,com=2;
-    partida->jugadores=0;
-    partida->turno=aleatorio(1,2);
+    int hayplay,botones=0,invmov=0,com=0;
+
+    ImprimirTablero(partida);
     hayplay=HayJugada(partida->dim,partida->tablero);
     while(hayplay==0)
     {
-    com = ingrese_comando(movimiento,partida);
-    invmov=InvalidMove(partida,movimiento);
-    ImprimirTablero(partida);
+        if (partida->jugadores==1 && partida->turno==2)
+        {
+            MovPc(partida,movimiento);
+            com=0;
+            printf("La computadora ya realizo su movimiento\n");
+        }
+        else
+        {com = ingrese_comando(movimiento,partida);
+        invmov=InvalidMove(partida,movimiento);
+
         while (invmov!=0 && com==0)
         {
             errores(invmov);
             com = ingrese_comando(movimiento,partida);
             invmov=InvalidMove(partida,movimiento);
         }
+        }
         if (invmov == 0 && com==0)
         {
             botones=hacerjugada(partida,movimiento);
         }
+
 
         if (com == 0)
         {
@@ -58,9 +67,10 @@ void dosplayers(tMovimiento *movimiento,tPartida* partida)
               partida->ptsjug2+=botones;
               partida->turno=1;
             }
-        }
-        hayplay=HayJugada(partida->dim,partida->tablero);
+
         ImprimirTablero(partida);
+        hayplay=HayJugada(partida->dim,partida->tablero);
+        }
     }
     if(partida->turno==1)
         printf("\n\nFELICITACIONES JUGADOR 2,HAS GANADO!!\n\n");
@@ -182,12 +192,16 @@ void menu()
     }
     switch(opcion[0])
     {
-        case(1):printf("Ingrese la dimesion del tablero (Entre 5 y 30): ");
+        case(1):partida->jugadores=0;
+                partida->turno=aleatorio(1,2);
+                printf("Ingrese la dimesion del tablero (Entre 5 y 30): ");
                 partida->dim=pedirDim();
                 abrirPartida(movimiento,partida);
                 dosplayers(movimiento,partida);
                 break;
-        case(2):printf("Ingrese la dimesion del tablero (Entre 5 y 30): ");
+        case(2):partida->jugadores=1;
+                partida->turno=aleatorio(1,2);
+                printf("Ingrese la dimesion del tablero (Entre 5 y 30): ");
                 partida->dim=pedirDim();
                 abrirPartida(movimiento,partida);
                 dosplayers(movimiento,partida);
@@ -208,10 +222,8 @@ void menu()
                 }
                 partida->ptsjug1=0;
                 partida->ptsjug2=0;
-                if(partida->jugadores==0)
-                {
-                    dosplayers(movimiento,partida);
-                }
+                dosplayers(movimiento,partida);
+
                 break;
         case(4):printf("\n\nSaliendo...Gracias por jugar.\n\n");
                 exit(9);
@@ -262,7 +274,7 @@ void quit(tMovimiento *movimiento,tPartida *partida)
                     error2=1;
                     scanf("%s",nombre_partida);
                     GuardarPartida(nombre_partida,partida);
-                    printf("Su partida se guardo exitosmente....gracias por jugar.\n\n");
+                    printf("\nSu partida se guardo exitosamente....gracias por jugar.\n\n");
                     exit(9);
 
                 }
