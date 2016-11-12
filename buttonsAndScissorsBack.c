@@ -1,19 +1,17 @@
 #include "buttonsAndScissorsBack.h"
 
-
 void asignacionTabla(tMovimiento * tabla,int pos,int F1,int C1,int F2,int C2);
 int Buscarmismo(char ** matriz,int F1, int C1, int df, int dc, int dim);
 char** crearMatriz(int n);
 int contarsaltos(char ** matriz,int F1,int C1, int df, int dc, int dim, int * posfx, int * posfy );
 int Escero(char **matriz,int F1,int C1,int df,int dc,int salto);
 int EsIgual(char **matriz,int F1,int C1,int df,int dc,int salto);
-
+int hacerjugada(tPartida *partida,tMovimiento * movimiento );
+int HayJugada(tPartida * partida);
 int ExisteTablero(const char* filename);
 int ExisteArchivo(const char* filename);
 int Maximo (tPartida * partida,tMovimiento * tabla);
 int Minimo (tPartida * partida,tMovimiento * tabla);
-
-
 
 int AbrirTablero(tPartida* partida)
 {
@@ -21,10 +19,10 @@ int AbrirTablero(tPartida* partida)
 
   char* filename;
   if (partida->dim < 10)
-    filename=malloc(10*sizeof(char));
+    filename=malloc(6*sizeof(char));
   else
-    filename=malloc(12*sizeof(char));
-  sprintf(filename, "./%dx%d.txt", partida->dim, partida->dim);
+    filename=malloc(8*sizeof(char));
+  sprintf(filename, "./%dx%d", partida->dim, partida->dim);
 
 //Veo si ese archivo existe
   if (!ExisteTablero(filename))
@@ -120,7 +118,6 @@ int CargarPartida(const char* filename, tPartida *partida)
   return 1;
 }
 
-
 //Se ingresa una matriz, coordenadas iniciales, un desplazamiento y punteros a posiciones finales.
 //Se busca mediante saltos, hasta donde se encuentra el mas proximo distinto de la posicon inicial.
 int contarsaltos(char ** matriz,int F1,int C1, int df, int dc, int dim, int * posfx, int * posfy )
@@ -144,6 +141,7 @@ int contarsaltos(char ** matriz,int F1,int C1, int df, int dc, int dim, int * po
 
   return botones;
 }
+
 
 char** crearMatriz(int n)
 {
@@ -236,62 +234,91 @@ void GuardarPartida( const char* filename, tPartida* partida)
   fclose(archivo);
 }
 
+//Dada una direccion de movimiento correcta, previamente verificada
 int hacerjugada(tPartida *partida,tMovimiento * movimiento )
 {
   int dx,dy,x=movimiento->F1,y=movimiento->C1, cont=0 ;
-    if ((movimiento->F2-movimiento->F1)==0)
-        dx=0;
-    else
-        dx= (movimiento->F2) > (movimiento->F1) ? 1 : -1;
-
-    if ((movimiento->C2-movimiento->C1)==0)
-        dy=0;
-    else
-        dy = (movimiento->C2) > (movimiento->C1) ? 1 : -1;
-
-  for (; x!=(movimiento->F2) || y!=movimiento->C2; x+= dx, y+=dy)
+  if ((movimiento->F2-movimiento->F1)==0) //Si la resta de las posiciones en filas es 0, la pendiente en x es 0; 
+    dx=0;
+  else
+    dx= (movimiento->F2) > (movimiento->F1) ? 1 : -1;// si no es 0, la pendiente es -1 o 1 dependiedno de los valores.
+  if ((movimiento->C2-movimiento->C1)==0) //Si la resta de las posiciones en columna es 0, la pendiente en x es 0;
+    dy=0;
+  else
+    dy = (movimiento->C2) > (movimiento->C1) ? 1 : -1; // si no es 0, la pendiente es -1 o 1 dependiedno de los valores.
+  for (; x!=(movimiento->F2) || y!=movimiento->C2; x+= dx, y+=dy)//Mediante iteraciones, se va haciendo el corte colocando 0 en la linea de corte. 
   {
     if ( partida->tablero[x][y]!='0')
     {
-        partida->tablero[x][y]='0';
-        cont++;
+      partida->tablero[x][y]='0';
+      cont++;
     }
   }
-  partida->tablero[movimiento->F2][movimiento->C2]='0';
-    cont++;
-return cont;
+  partida->tablero[movimiento->F2][movimiento->C2]='0';//Se hace 0 en la primera fila de corte. 
+  cont++;
+  return cont;
 }
 
-int HayJugada(int N, char **tablero)
+// Hay jugada indica si hay un movimiento de tan solo dos botones posibles. Una vez encontrado, devuelve verdadero.
+/*
+int HayJugada(tPartida * partida)
 {
-    int F1,C1,df,dc,mov;
-   for (F1 = 0; F1 < N; F1++)
+  int F1,C1,df,dc,mov;
+  for (F1 = 0; F1 < (partida->dim); F1++) //Recorre todas las filas
+  {
+    for (C1 = 0; C1 < (partida->dim); C1++)//Recorre todas las columnas
     {
-    for (C1 = 0; C1 < N; C1++)
-       {
-         if (tablero[F1][C1] != '0')
-         {
-                for (df=0; df<2;df++)
-                {
-                    for (dc=-1; dc<2;dc++)
-                    {
-                        if (!(df==dc && dc==0)&& !(df==0 && dc==-1))
-                        {
-                            mov=Buscarmismo(tablero,F1,C1,df,dc,N);
-                            if (mov>0)
-                            {
-                                return 0;//hay jugada
-
-                            }
-
-                        }
-                    }
-                }
+      if ((!Escero(partida->tablero,F1,C1,0,0,0)))//Verifica que la posicion no sea 0
+      {
+        for (df=0; df<2;df++)//Barre Las filas adyascentes
+        {
+          for (dc=-1; dc<2;dc++)//Barre las columnas adyascentes
+          {
+            if ((direccionBuena(df,dc)))//Verifica que las posiciones del barrido sea de la L inferior
+            {
+              mov=Buscarmismo(partida->tablero,F1,C1,df,dc,partida->dim);//Manda a buscar ficha desde la posicion F1, C1 en direccion df dc
+              if (mov>0)//Si es mayor a 0, significa que hay ficha
+              {
+                return 0;//hay jugada
+              }
             }
+          }
         }
-     }
-    return 1;
+      }
+    }
+  }
+  return 1;//Si llego aca, es poque no encontro ficha. NO hay jugada
 }
+*/
+
+
+int HayJugada(tPartida* partida)
+{
+	tMovimiento coordenadas;
+	for (int F1 = 0; F1 < partida->dim; ++F1)
+	{
+		for (int C1 = 0; C1 < partida->dim; ++C1)
+		{
+			for (int F2 = F1; F2 < partida->dim; ++F2)
+			{
+				for (int C2 = 0; C2 < partida->dim; ++C2)
+				{
+					coordenadas.F1=F1;
+					coordenadas.C1=C1;
+					coordenadas.F2=F2;
+					coordenadas.C2=C2;
+
+					if (InvalidMove(partida, &coordenadas) == 0)
+					{
+						return 0;
+					}
+				}
+			}
+		}
+	}
+	return 1;
+}
+
 
 int InvalidMove(tPartida* partida, tMovimiento* coordenadas)
 {
@@ -312,7 +339,7 @@ int InvalidMove(tPartida* partida, tMovimiento* coordenadas)
      return 2;
 
 
-    if (partida->tablero[coordenadas->F1][coordenadas->C1] == ' ' || partida->tablero[coordenadas->F2][coordenadas->C2] == ' ')
+    if (partida->tablero[coordenadas->F1][coordenadas->C1] == '0' || partida->tablero[coordenadas->F2][coordenadas->C2] == '0')
      return 3;
 
 
@@ -344,17 +371,16 @@ int InvalidMove(tPartida* partida, tMovimiento* coordenadas)
     return 0;
 }
 
-
 //Se ingresan una estructura tPartida con los datos de la partida y un puntero de movimientos
 //En el arregglo de tmovimientos se guardaran los posibles movimientos, con la mayor cantidad de botones cortados.
-int Maximo (tPartida * partida,tMovimiento * tabla)
+int Maximo(tPartida * partida,tMovimiento * tabla)
 {
   int F1,C1,df,dc,max=2,contmax=0,cont=0, posfx, posfy;
   //reservo memoria para posiciones de COls Final
   //  posfx y posfy son punteros a las direcciones finales
   //  contmax es el contado del listado de maximos
   /*Cont, cuenta el numero de botones en una linea*/
-  /*max, señala la cantidad maxima de botones. Inicializa en 1, porque seguro que hay movimiento*/
+  /*max, seÃ±ala la cantidad maxima de botones. Inicializa en 1, porque seguro que hay movimiento*/
   for (F1=0;F1<(partida->dim); F1++)//Recorro todas las filas
   {
     for (C1=0; C1<(partida->dim); C1++)//Recorro todas las columnas
@@ -400,7 +426,7 @@ int Maximo (tPartida * partida,tMovimiento * tabla)
 
 //Se ingresan una estructura tPartida con los datos de la partida y un puntero de movimientos
 //En el arregglo de tmovimientos se guardaran los posibles movimientos, con la menor cantidad de botones cortados.
-int Minimo (tPartida * partida,tMovimiento * tabla)
+int Minimo(tPartida * partida,tMovimiento * tabla)
 {
   int F1,C1,df,dc,cont=0,salto=0;
   for (F1=0;F1<(partida->dim); F1++)//Recorre todas las filas
@@ -463,5 +489,4 @@ void MovPc(tPartida *partida, tMovimiento * movimiento)
     movimiento->C1=tabla[elegida].C1;
     movimiento->F2=tabla[elegida].F2;
     movimiento->C2=tabla[elegida].C2;
-
 }
