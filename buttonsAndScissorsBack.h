@@ -4,7 +4,6 @@
 #include <ctype.h>
 #include <math.h>
 #include <time.h>
-#include "getnum.h"
 #define BORRA_BUFFER while (getchar() != '\n')
 #define VERDADERO 0==0
 #define FALSO 1==0
