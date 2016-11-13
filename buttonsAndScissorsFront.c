@@ -7,7 +7,6 @@ void ImprimirTablero(tPartida* partida);
 int ingrese_comando(tMovimiento * movimiento, tPartida *partida);
 int pedirDim();
 void quit(tMovimiento *movimiento,tPartida *partida);
-int main();
 int menu();
 
 void abrirPartida(tMovimiento *movimiento,tPartida *partida)
@@ -176,6 +175,7 @@ int ingrese_comando(tMovimiento * movimiento, tPartida *partida)
                 printf("Error! Comando incorrecto, ingrese nuevamente: ");
             }
     }
+
   return 0;
 }
 
@@ -307,11 +307,5 @@ int menu()
                 exit(9);
                 break;
     }
-    return 0;
-}
-
-int main()
-{
-    menu();
     return 0;
 }
