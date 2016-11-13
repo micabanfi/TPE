@@ -238,7 +238,7 @@ void GuardarPartida( const char* filename, tPartida* partida)
 int hacerjugada(tPartida *partida,tMovimiento * movimiento )
 {
   int dx,dy,x=movimiento->F1,y=movimiento->C1, cont=0 ;
-  if ((movimiento->F2-movimiento->F1)==0) //Si la resta de las posiciones en filas es 0, la pendiente en x es 0; 
+  if ((movimiento->F2-movimiento->F1)==0) //Si la resta de las posiciones en filas es 0, la pendiente en x es 0;
     dx=0;
   else
     dx= (movimiento->F2) > (movimiento->F1) ? 1 : -1;// si no es 0, la pendiente es -1 o 1 dependiedno de los valores.
@@ -246,7 +246,7 @@ int hacerjugada(tPartida *partida,tMovimiento * movimiento )
     dy=0;
   else
     dy = (movimiento->C2) > (movimiento->C1) ? 1 : -1; // si no es 0, la pendiente es -1 o 1 dependiedno de los valores.
-  for (; x!=(movimiento->F2) || y!=movimiento->C2; x+= dx, y+=dy)//Mediante iteraciones, se va haciendo el corte colocando 0 en la linea de corte. 
+  for (; x!=(movimiento->F2) || y!=movimiento->C2; x+= dx, y+=dy)//Mediante iteraciones, se va haciendo el corte colocando 0 en la linea de corte.
   {
     if ( partida->tablero[x][y]!='0')
     {
@@ -254,7 +254,7 @@ int hacerjugada(tPartida *partida,tMovimiento * movimiento )
       cont++;
     }
   }
-  partida->tablero[movimiento->F2][movimiento->C2]='0';//Se hace 0 en la primera fila de corte. 
+  partida->tablero[movimiento->F2][movimiento->C2]='0';//Se hace 0 en la primera fila de corte.
   cont++;
   return cont;
 }
@@ -385,7 +385,7 @@ int F1,C1,df,dc,max=2,contmax=0,cont=0, posfx, posfy,elegida;
   //en tabla se guardan los posibles movimientos a realizar
   tMovimiento * tabla;
   tabla=malloc(sizeof(tMovimiento));
-  
+
   for (F1=0;F1<(partida->dim); F1++)//Recorro todas las filas
   {
     for (C1=0; C1<(partida->dim); C1++)//Recorro todas las columnas
@@ -437,7 +437,7 @@ int F1,C1,df,dc,max=2,contmax=0,cont=0, posfx, posfy,elegida;
 //En el arregglo de tmovimientos se guardaran los posibles movimientos, con la menor cantidad de botones cortados.
 void Minimo(tPartida * partida,tMovimiento * movimiento)
 {
-  int F1,C1,df,dc,cont=0,salto=0;
+  int F1,C1,df,dc,cont=0,salto=0,elegida=0;
   // Cont cuenta la cantidad de posibles movimientos
   //Salto determina la cantidad de saltos hasta el boton del mismo color mas cercano
   //elegida es un aleatorio entre 0 y la dimension del vector-1 que determina la opcion elegida
@@ -469,7 +469,7 @@ void Minimo(tPartida * partida,tMovimiento * movimiento)
               }
             }
           }
-	      }
+	}
       }
     }
   }
@@ -482,12 +482,12 @@ void Minimo(tPartida * partida,tMovimiento * movimiento)
 }
 
 //Movpc recibe un puntero a Tpartida, y un puntero a Movimiento.
-//Sortea Maximo o Minimo. 
+//Sortea Maximo o Minimo.
 //Maximo o minimo devuelven en movimiento, el movimiento ya sorteado.
 void MovPc(tPartida *partida, tMovimiento * movimiento)
 {
     //op va a ser una variable booleana que decida si se busca la menor cantidad de botones o la mayor
-    int ,op=0;
+    int op=0;
     /*se sortea maximo o minimo*/
     op=aleatorio(0,1);
     if (op==0)
