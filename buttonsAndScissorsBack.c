@@ -80,22 +80,40 @@ int Buscarmismo(char ** matriz,int F1, int C1, int df, int dc, int dim)
 
 int CargarPartida(const char* filename, tPartida *partida)
 {
-  if (!(ExisteArchivo(filename)))
-    return 0;
-  char ubicacion[strlen(filename)+3];
-  snprintf(ubicacion, sizeof(ubicacion), "./%s", filename);
-  FILE* archivo = fopen(ubicacion, "rb");
+	if (!(ExisteArchivo(filename)))
+		return 0;
+	char ubicacion[strlen(filename)+3];
+	snprintf(ubicacion, sizeof(ubicacion), "./%s", filename);
+	FILE* archivo = fopen(ubicacion, "rb");
 
-  fread(&partida->jugadores, sizeof(partida->jugadores), 1, archivo);
-  fread(&partida->turno, sizeof(partida->turno), 1, archivo);
-  fread(&partida->dim, sizeof(partida->dim), 1, archivo);
+	int* aux=0;
 
-  partida->tablero=crearMatriz(partida->dim);
-  for (int i = 0; i < (partida->dim); ++i)
-    for (int j = 0; j < (partida->dim); ++j)
-      partida->tablero[i][j]=fgetc(archivo);
-  fclose(archivo);
-  return 1;
+	fread(aux, sizeof(partida->jugadores), 1, archivo);
+	if (*aux != 0 || *aux != 1)
+		return 0;
+	partida->jugadores=*aux;
+
+	fread(aux, sizeof(partida->turno), 1, archivo);
+	if (*aux != 1 || *aux != 2)
+		return 0;
+	partida->turno=*aux;
+
+	fread(aux, sizeof(partida->dim), 1, archivo);
+	if (*aux < 5 || *aux > 30)
+		return 0;
+	partida->dim=*aux;
+
+	partida->tablero=crearMatriz(partida->dim);
+	for (int i = 0; i < (partida->dim); ++i)
+		for (int j = 0; j < (partida->dim); ++j)
+			partida->tablero[i][j]=fgetc(archivo);
+	if (fgetc(archivo) != EOF)
+	{
+		return 0;
+	}
+
+	fclose(archivo);
+	return 1;
 }
 
 int contarsaltos(char ** matriz,int F1,int C1, int df, int dc, int dim, int * posfx, int * posfy )
