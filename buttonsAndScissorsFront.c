@@ -1,23 +1,20 @@
 #include "buttonsAndScissorsBack.h"
 
-
 void abrirPartida(tMovimiento *movimiento,tPartida *partida);
 void dosplayers(tMovimiento *movimiento,tPartida* partida);
 void errores(int a);
 void ImprimirTablero(tPartida* partida);
 int ingrese_comando(tMovimiento * movimiento, tPartida *partida);
-void menu();
 int pedirDim();
 void quit(tMovimiento *movimiento,tPartida *partida);
-
+int main();
 
 void abrirPartida(tMovimiento *movimiento,tPartida *partida)
 {
     int resp=2;
     resp=AbrirTablero(partida);
-    while (resp==0)
-    {
-        printf("Archivo no encontrado o corrupto.Ingrese nuevamente: ");
+    while (resp==0){
+        printf("Archivo no encontrado o corrupto. Intente nuevamente: ");
         partida->dim=pedirDim();
         resp=AbrirTablero(partida);
     }
@@ -37,24 +34,26 @@ void dosplayers(tMovimiento *movimiento,tPartida* partida)
         {
             MovPc(partida,movimiento);
             com=0;
-            printf("La computadora ya realizo su movimiento\n");
+            printf("\n\n\tLA COMPUTADORA ESTA REALIZANDO SU MOVIMIENTO\n\n");
         }
         else
         {
-          com = ingrese_comando(movimiento,partida);
-          invmov=InvalidMove(partida,movimiento);
-
-          while (invmov!=0 && com==0)
-          {
-            errores(invmov);
             com = ingrese_comando(movimiento,partida);
             invmov=InvalidMove(partida,movimiento);
-          }
+
+            while (invmov!=0 && com==0)
+            {
+                errores(invmov);
+                com = ingrese_comando(movimiento,partida);
+                invmov=InvalidMove(partida,movimiento);
+            }
         }
+
         if (invmov == 0 && com==0)
         {
             botones=hacerjugada(partida,movimiento);
         }
+
         if (com == 0)
         {
            if(partida->turno==1)
@@ -73,10 +72,10 @@ void dosplayers(tMovimiento *movimiento,tPartida* partida)
         }
     }
     if(partida->turno==1)
-        printf("\n\nFELICITACIONES JUGADOR 2,HAS GANADO!!\n\n");
+        printf("\n\nFELICITACIONES JUGADOR 2! HAS GANADO!!\n\n");
     else
-        printf("\n\nFELICITACIONES JUGADOR 1,HAS GANADO!!\n\n");
-    menu();
+        printf("\n\nFELICITACIONES JUGADOR 1! HAS GANADO!!\n\n");
+    main();
 }
 
 void errores(int a)
@@ -94,9 +93,7 @@ void errores(int a)
                 break;
         case(6):printf("Hay botones bloqueando el camino.\n");
                 break;
-
     }
-
 }
 
 void ImprimirTablero(tPartida* partida)
@@ -134,13 +131,13 @@ void ImprimirTablero(tPartida* partida)
     for (int k = 0; k < (partida->dim); ++k)
         printf("\t");
     printf("\t/\n\n");
-
+    
     printf("Turno jugador %d \n",partida->turno);
 }
 
 int ingrese_comando(tMovimiento * movimiento, tPartida *partida)
 {
-    //ver por longitud cuando ponfo el nombre
+    //ver por longitud cuando pongo el nombre
     char comando[MAX_DIM]={0};
     int cont=0,c;
     char *nombre_partida=malloc(sizeof(char)*20);
@@ -179,64 +176,7 @@ int ingrese_comando(tMovimiento * movimiento, tPartida *partida)
             }
     }
 
-
   return 0;
-}
-
-void menu()
-{
-    int opcion[2]={0},hayarchivo=0;
-    char *nombrearchivo=malloc(sizeof(char)*20);
-    tPartida *partida=malloc(sizeof(tPartida));
-    tMovimiento *movimiento=malloc((sizeof(tMovimiento)));
-    printf("Menu Principal\n1.Juego de dos jugadores\n2.Juego contra computadora\n3.Recuperar un juego grabado\n4.Terminar\n\n");
-    printf("Ingrese la opcion: ");
-    scanf("%d%c",&opcion[0],&opcion[1]);
-    while (opcion[0]<1 || opcion[0]>4 || opcion[1]!='\n')
-    {
-        BORRA_BUFFER;//problemas
-        printf("\nOpcion incorrecta, ingrese opcion valida: ");
-        scanf("%d%c",&opcion[0],&opcion[1]);
-    }
-    switch(opcion[0])
-    {
-        case(1):partida->jugadores=0;
-                partida->turno=aleatorio(1,2);
-                printf("Ingrese la dimesion del tablero (Entre 5 y 30): ");
-                partida->dim=pedirDim();
-                abrirPartida(movimiento,partida);
-                dosplayers(movimiento,partida);
-                break;
-        case(2):partida->jugadores=1;
-                partida->turno=aleatorio(1,2);
-                printf("Ingrese la dimesion del tablero (Entre 5 y 30): ");
-                partida->dim=pedirDim();
-                abrirPartida(movimiento,partida);
-                dosplayers(movimiento,partida);
-
-
-                break;
-        case(3):
-                printf("Ingrese nombre de juego que desea recuperar: ");
-                scanf("%s",nombrearchivo);
-                BORRA_BUFFER;
-                hayarchivo=CargarPartida(nombrearchivo,partida);
-                while(hayarchivo==0)
-                {
-                        printf("No existe el archivo,ingrese otro nombre: ");
-                        scanf("%s",nombrearchivo);
-                        BORRA_BUFFER;
-                        hayarchivo=CargarPartida(nombrearchivo,partida);
-                }
-                partida->ptsjug1=0;
-                partida->ptsjug2=0;
-                dosplayers(movimiento,partida);
-
-                break;
-        case(4):printf("\n\nSaliendo...Gracias por jugar.\n\n");
-                exit(9);
-                break;
-    }
 }
 
 int pedirDim()
@@ -246,7 +186,7 @@ int pedirDim()
 
     while ( nivel[0]<5 || nivel[0]>30 || nivel[1]!='\n')
     {
-        printf("\nNivel incorrecto, ingrese un nivel valido: ");
+        printf("\nNivel inexistente, ingrese un nivel valido (Entre 5 y 30): ");
         scanf("%d%c",&nivel[0],&nivel[1]);
         BORRA_BUFFER;
     }
@@ -254,13 +194,12 @@ int pedirDim()
     return nivel[0];
 }
 
-
 void quit(tMovimiento *movimiento,tPartida *partida)
 {
     char*nombre_partida=malloc(sizeof(char));
     int error=0,error2=0;
     char c,d;
-    printf("Esta seguro que quiere salir (Y/N)? ");
+    printf("Esta seguro que quiere salir? (Y/N): ");
     while(error==0)
     {
 
@@ -269,7 +208,7 @@ void quit(tMovimiento *movimiento,tPartida *partida)
 
         if ('Y'==toupper(c) && '\n'==d)
         {
-            printf("Desea guardar la partida antes de salir (Y/N)? ");
+            printf("Desea guardar la partida antes de salir? (Y/N): ");
             error=1;
             while(error2==0)
             {
@@ -282,20 +221,20 @@ void quit(tMovimiento *movimiento,tPartida *partida)
                     error2=1;
                     scanf("%s",nombre_partida);
                     GuardarPartida(nombre_partida,partida);
-                    printf("\nSu partida se guardo exitosamente....gracias por jugar.\n\n");
+                    printf("\nSu partida se guardo exitosamente.... Gracias por jugar!\n\n");
                     exit(9);
 
                 }
                 else if('N'==toupper(c) && '\n'==d)
                 {
                     error2=1;
-                    printf("\nSaliendo....gracias por jugar.\n\n");
+                    printf("\nSaliendo.... Gracias por jugar!\n\n");
                     exit(9);
                 }
                 else
                 {
                     BORRA_BUFFER;
-                    printf("Ingrese una opcion correcta(Y/N): ");
+                    printf("Ingrese una opcion correcta (Y/N): ");
                 }
             }
 
@@ -308,18 +247,65 @@ void quit(tMovimiento *movimiento,tPartida *partida)
         else
         {
             BORRA_BUFFER;
-            printf("Ingrese una opcion correcta(Y/N): ");
+            printf("Ingrese una opcion correcta (Y/N): ");
 
         }
     }
 }
 
-
 int main()
 {
-    tPartida partida;
-    tMovimiento movimiento;
-    menu();
-    ingrese_comando(&movimiento,&partida);
+    int opcion[2]={0},hayarchivo=0;
+    char *nombrearchivo=malloc(sizeof(char)*20);
+    tPartida *partida=malloc(sizeof(tPartida));
+    tMovimiento *movimiento=malloc((sizeof(tMovimiento)));
+    printf("Menu Principal\n1.Juego de dos jugadores\n2.Juego contra computadora\n3.Recuperar un juego grabado\n4.Terminar\n\n");
+    printf("Ingrese la opcion: ");
+    scanf("%d%c", &opcion[0], &opcion[1]);
+    while (opcion[0]<1 || opcion[0]>4 || opcion[1]!='\n')
+    {
+        BORRA_BUFFER;
+        printf("\nOpcion incorrecta, ingrese opcion valida: ");
+        scanf("%d%c", &opcion[0], &opcion[1]);
+    }
+    switch(opcion[0])
+    {
+        case(1):partida->jugadores=0;
+                partida->turno=aleatorio(1, 2);
+                printf("Ingrese la dimesion del tablero (Entre 5 y 30): ");
+                partida->dim=pedirDim();
+                abrirPartida(movimiento, partida);
+                dosplayers(movimiento, partida);
+                break;
+        case(2):partida->jugadores=1;
+                partida->turno=aleatorio(1,2);
+                printf("Ingrese la dimesion del tablero (Entre 5 y 30): ");
+                partida->dim=pedirDim();
+                abrirPartida(movimiento,partida);
+                dosplayers(movimiento, partida);
+
+
+                break;
+        case(3):
+                printf("Ingrese el nombre del juego que desea cargar: ");
+                scanf("%s",nombrearchivo);
+                BORRA_BUFFER;
+                hayarchivo=CargarPartida(nombrearchivo,partida);
+                while(hayarchivo==0)
+                {
+                        printf("No existe el archivo! Ingrese otro nombre: ");
+                        scanf("%s",nombrearchivo);
+                        BORRA_BUFFER;
+                        hayarchivo=CargarPartida(nombrearchivo,partida);
+                }
+                partida->ptsjug1=0;
+                partida->ptsjug2=0;
+                dosplayers(movimiento,partida);
+
+                break;
+        case(4):printf("\n\nSaliendo... Gracias por jugar!\n\n");
+                exit(9);
+                break;
+    }
     return 0;
 }
