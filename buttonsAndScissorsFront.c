@@ -8,6 +8,7 @@ int ingrese_comando(tMovimiento * movimiento, tPartida *partida);
 int pedirDim();
 void quit(tMovimiento *movimiento,tPartida *partida);
 int main();
+int menu();
 
 void abrirPartida(tMovimiento *movimiento,tPartida *partida)
 {
@@ -75,7 +76,7 @@ void dosplayers(tMovimiento *movimiento,tPartida* partida)
         printf("\n\nFELICITACIONES JUGADOR 2! HAS GANADO!!\n\n");
     else
         printf("\n\nFELICITACIONES JUGADOR 1! HAS GANADO!!\n\n");
-    main();
+    menu();
 }
 
 void errores(int a)
@@ -154,14 +155,14 @@ int ingrese_comando(tMovimiento * movimiento, tPartida *partida)
                 BORRA_BUFFER;
             comando[cont] = 0;
 
-            if(strncmp(comando, "save ", 5)==0)
+            if(strncmp(comando, "save ", 5)==0 && comando[5]!=0)
             {
                 sscanf(comando,"save %s",nombre_partida);
                 GuardarPartida(nombre_partida,partida);
                 printf("\nLa partida se guardo exitosamente!\n");
                 return 1;
             }
-            else if (strncmp(comando, "quit", 4)==0)
+            else if (strncmp(comando, "quit", 4)==0 && comando[4]==0)
             {
                 quit(movimiento, partida);
                 return 1;
@@ -175,7 +176,6 @@ int ingrese_comando(tMovimiento * movimiento, tPartida *partida)
                 printf("Error! Comando incorrecto, ingrese nuevamente: ");
             }
     }
-
   return 0;
 }
 
@@ -253,7 +253,7 @@ void quit(tMovimiento *movimiento,tPartida *partida)
     }
 }
 
-int main()
+int menu()
 {
     int opcion[2]={0},hayarchivo=0;
     char *nombrearchivo=malloc(sizeof(char)*20);
@@ -307,5 +307,11 @@ int main()
                 exit(9);
                 break;
     }
+    return 0;
+}
+
+int main()
+{
+    menu();
     return 0;
 }
