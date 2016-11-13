@@ -1,3 +1,5 @@
+#include "buttonsAndScissorsBack.h"
+
 int AbrirTablero(tPartida* partida)
 {
 //Asigno suficiente memoria para que entre el nombre del archivo.
@@ -15,7 +17,6 @@ int AbrirTablero(tPartida* partida)
   FILE* archivo = fopen(filename, "r");
 //Elijo un tablero al azar
   int opciones;
-
   opciones = (fgetc(archivo)-'0');
   int eleccion = aleatorio(1, opciones);
 
@@ -170,7 +171,6 @@ int Escero(char **matriz,int F1,int C1,int df,int dc,int salto)
     return FALSO;
 }
 
-
 int EsIgual(char **matriz,int F1,int C1,int df,int dc,int salto)
 {
   if (matriz[F1][C1]==matriz[F1+df*salto][C1+dc*salto])
@@ -178,6 +178,7 @@ int EsIgual(char **matriz,int F1,int C1,int df,int dc,int salto)
   else
     return FALSO;
 }
+
 
 int ExisteArchivo(const char* filename)
 {
@@ -329,7 +330,6 @@ int InvalidMove(tPartida* partida, tMovimiento* coordenadas)
          }
     return 0;
 }
-
 
 void Maximo(tPartida * partida,tMovimiento * movimiento)
 {
