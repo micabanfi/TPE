@@ -169,10 +169,10 @@ char** crearMatriz(int n)
     }
     return tablero;
 }
-
+//Verifico en una matriz desde una posicion inicial con un desplazamiento en x,y sea '0'
 int Escero(char **matriz,int F1,int C1,int df,int dc,int salto)
 {
-  if (matriz[F1][C1]=='0')
+  if (matriz[F1+df*salto][C1+dc*salto]=='0')
     return VERDADERO;
   else
     return FALSO;
