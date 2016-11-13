@@ -1,6 +1,6 @@
 COMPILER=gcc
-OUTPUT_FILE=TPE
-FILES=buttonsAndScissorsBack.c buttonsAndScissorsBack.h buttonsAndScissorsFront.c
+OUTPUT_FILE=juego
+FILES=buttonsAndScissorsBack.c buttonsAndScissorsBack.h buttonsAndScissorsFront.c main.c
 
 ALL:
 	$(COMPILER) -o $(OUTPUT_FILE) $(FILES) -lm
