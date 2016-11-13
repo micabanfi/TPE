@@ -1,18 +1,3 @@
-#include "buttonsAndScissorsBack.h"
-
-void asignacionTabla(tMovimiento * tabla,int pos,int F1,int C1,int F2,int C2);
-int Buscarmismo(char ** matriz,int F1, int C1, int df, int dc, int dim);
-char** crearMatriz(int n);
-int contarsaltos(char ** matriz,int F1,int C1, int df, int dc, int dim, int * posfx, int * posfy );
-int Escero(char **matriz,int F1,int C1,int df,int dc,int salto);
-int EsIgual(char **matriz,int F1,int C1,int df,int dc,int salto);
-int hacerjugada(tPartida *partida,tMovimiento * movimiento );
-int HayJugada(tPartida * partida);
-int ExisteTablero(const char* filename);
-int ExisteArchivo(const char* filename);
-void Maximo (tPartida * partida,tMovimiento * movimiento);
-void Minimo (tPartida * partida,tMovimiento * movimiento);
-
 int AbrirTablero(tPartida* partida)
 {
 //Asigno suficiente memoria para que entre el nombre del archivo.
@@ -71,8 +56,6 @@ int aleatorio(int izq, int der)
     return num;
 }
 
-//Dada un tMovimiento vector, un indice, y coordenadas finales e inciales.
-//se guardan en el vector de estructura tmovimiento en la posicion del indice el movimiento.
 void asignacionTabla(tMovimiento * tabla,int pos,int F1,int C1,int F2,int C2)
 {
   tabla[pos].F1=F1;
@@ -81,8 +64,6 @@ void asignacionTabla(tMovimiento * tabla,int pos,int F1,int C1,int F2,int C2)
   tabla[pos].C2=C2;
 }
 
-//Se ingresa una matriz, las coordenadas de una posicion inicial, y un desplazamiento sobre x e y.
-// Se busca mediante saltos desde una posicon inicial sobre una direccion a donde se encuentra el de mismo valor.
 int Buscarmismo(char ** matriz,int F1, int C1, int df, int dc, int dim)
 {
   int salto;
@@ -95,7 +76,6 @@ int Buscarmismo(char ** matriz,int F1, int C1, int df, int dc, int dim)
   }
   //Encuentra un char diferente a la posicon inicial o diferente a 0, retorna 0;
   return 0;
-
 }
 
 int CargarPartida(const char* filename, tPartida *partida)
@@ -118,8 +98,6 @@ int CargarPartida(const char* filename, tPartida *partida)
   return 1;
 }
 
-//Se ingresa una matriz, coordenadas iniciales, un desplazamiento y punteros a posiciones finales.
-//Se busca mediante saltos, hasta donde se encuentra el mas proximo distinto de la posicon inicial.
 int contarsaltos(char ** matriz,int F1,int C1, int df, int dc, int dim, int * posfx, int * posfy )
 {
   //botones es la cantidad de botones encontrados en una linea
@@ -141,7 +119,6 @@ int contarsaltos(char ** matriz,int F1,int C1, int df, int dc, int dim, int * po
 
   return botones;
 }
-
 
 char** crearMatriz(int n)
 {
@@ -169,7 +146,7 @@ char** crearMatriz(int n)
     }
     return tablero;
 }
-//Verifico en una matriz desde una posicion inicial con un desplazamiento en x,y sea '0'
+
 int Escero(char **matriz,int F1,int C1,int df,int dc,int salto)
 {
   if (matriz[F1+df*salto][C1+dc*salto]=='0')
@@ -178,7 +155,7 @@ int Escero(char **matriz,int F1,int C1,int df,int dc,int salto)
     return FALSO;
 }
 
-//Verifico si dos direciones de una matriz,caracterizados por un desplazamiento son iguales
+
 int EsIgual(char **matriz,int F1,int C1,int df,int dc,int salto)
 {
   if (matriz[F1][C1]==matriz[F1+df*salto][C1+dc*salto])
@@ -234,11 +211,10 @@ void GuardarPartida( const char* filename, tPartida* partida)
   fclose(archivo);
 }
 
-//Dada una direccion de movimiento correcta, previamente verificada
 int hacerjugada(tPartida *partida,tMovimiento * movimiento )
 {
   int dx,dy,x=movimiento->F1,y=movimiento->C1, cont=0 ;
-  if ((movimiento->F2-movimiento->F1)==0) //Si la resta de las posiciones en filas es 0, la pendiente en x es 0;
+  if ((movimiento->F2-movimiento->F1)==0) //Si la resta de las posiciones en filas es 0, la pendiente en x es 0; 
     dx=0;
   else
     dx= (movimiento->F2) > (movimiento->F1) ? 1 : -1;// si no es 0, la pendiente es -1 o 1 dependiedno de los valores.
@@ -246,7 +222,7 @@ int hacerjugada(tPartida *partida,tMovimiento * movimiento )
     dy=0;
   else
     dy = (movimiento->C2) > (movimiento->C1) ? 1 : -1; // si no es 0, la pendiente es -1 o 1 dependiedno de los valores.
-  for (; x!=(movimiento->F2) || y!=movimiento->C2; x+= dx, y+=dy)//Mediante iteraciones, se va haciendo el corte colocando 0 en la linea de corte.
+  for (; x!=(movimiento->F2) || y!=movimiento->C2; x+= dx, y+=dy)//Mediante iteraciones, se va haciendo el corte colocando 0 en la linea de corte. 
   {
     if ( partida->tablero[x][y]!='0')
     {
@@ -254,13 +230,11 @@ int hacerjugada(tPartida *partida,tMovimiento * movimiento )
       cont++;
     }
   }
-  partida->tablero[movimiento->F2][movimiento->C2]='0';//Se hace 0 en la primera fila de corte.
+  partida->tablero[movimiento->F2][movimiento->C2]='0';//Se hace 0 en la primera fila de corte. 
   cont++;
   return cont;
 }
 
-// Hay jugada indica si hay un movimiento de tan solo dos botones posibles. Una vez encontrado, devuelve verdadero.
-/*
 int HayJugada(tPartida * partida)
 {
   int F1,C1,df,dc,mov;
@@ -289,36 +263,6 @@ int HayJugada(tPartida * partida)
   }
   return 1;//Si llego aca, es poque no encontro ficha. NO hay jugada
 }
-*/
-
-
-int HayJugada(tPartida* partida)
-{
-	tMovimiento coordenadas;
-	for (int F1 = 0; F1 < partida->dim; ++F1)
-	{
-		for (int C1 = 0; C1 < partida->dim; ++C1)
-		{
-			for (int F2 = F1; F2 < partida->dim; ++F2)
-			{
-				for (int C2 = 0; C2 < partida->dim; ++C2)
-				{
-					coordenadas.F1=F1;
-					coordenadas.C1=C1;
-					coordenadas.F2=F2;
-					coordenadas.C2=C2;
-
-					if (InvalidMove(partida, &coordenadas) == 0)
-					{
-						return 0;
-					}
-				}
-			}
-		}
-	}
-	return 1;
-}
-
 
 int InvalidMove(tPartida* partida, tMovimiento* coordenadas)
 {
@@ -371,11 +315,10 @@ int InvalidMove(tPartida* partida, tMovimiento* coordenadas)
     return 0;
 }
 
-//Se ingresan una estructura tPartida con los datos de la partida y un puntero de movimientos
-//En el arregglo de tmovimientos se guardaran los posibles movimientos, con la mayor cantidad de botones cortados.
+
 void Maximo(tPartida * partida,tMovimiento * movimiento)
 {
-int F1,C1,df,dc,max=2,contmax=0,cont=0, posfx, posfy,elegida;
+int F1,C1,df,dc,max=2,contmax=0,cont=0, posfx, posfy, elegida;
   //reservo memoria para posiciones de COls Final
   //  posfx y posfy son punteros a las direcciones finales
   //  contmax es el contado del listado de maximos
@@ -385,7 +328,7 @@ int F1,C1,df,dc,max=2,contmax=0,cont=0, posfx, posfy,elegida;
   //en tabla se guardan los posibles movimientos a realizar
   tMovimiento * tabla;
   tabla=malloc(sizeof(tMovimiento));
-
+  
   for (F1=0;F1<(partida->dim); F1++)//Recorro todas las filas
   {
     for (C1=0; C1<(partida->dim); C1++)//Recorro todas las columnas
@@ -426,18 +369,16 @@ int F1,C1,df,dc,max=2,contmax=0,cont=0, posfx, posfy,elegida;
     }
   }
   tabla=realloc(tabla,(contmax)*sizeof(tMovimiento));
-  elegida= aleatorio(0,(contmax-1));
+  elegida = aleatorio(0,(contmax-1));
   movimiento->F1=tabla[elegida].F1;
   movimiento->C1=tabla[elegida].C1;
   movimiento->F2=tabla[elegida].F2;
   movimiento->C2=tabla[elegida].C2;
 }
 
-//Se ingresan una estructura tPartida con los datos de la partida y un puntero de movimientos
-//En el arregglo de tmovimientos se guardaran los posibles movimientos, con la menor cantidad de botones cortados.
 void Minimo(tPartida * partida,tMovimiento * movimiento)
 {
-  int F1,C1,df,dc,cont=0,salto=0,elegida=0;
+  int F1,C1,df,dc,cont=0,salto=0;
   // Cont cuenta la cantidad de posibles movimientos
   //Salto determina la cantidad de saltos hasta el boton del mismo color mas cercano
   //elegida es un aleatorio entre 0 y la dimension del vector-1 que determina la opcion elegida
@@ -469,21 +410,18 @@ void Minimo(tPartida * partida,tMovimiento * movimiento)
               }
             }
           }
-	}
+	      }
       }
     }
   }
   tabla=realloc(tabla,cont*sizeof(tMovimiento));
-  elegida= aleatorio(0,(cont-1));
+  int elegida= aleatorio(0,(cont-1));
   movimiento->F1=tabla[elegida].F1;
   movimiento->C1=tabla[elegida].C1;
   movimiento->F2=tabla[elegida].F2;
   movimiento->C2=tabla[elegida].C2;
 }
 
-//Movpc recibe un puntero a Tpartida, y un puntero a Movimiento.
-//Sortea Maximo o Minimo.
-//Maximo o minimo devuelven en movimiento, el movimiento ya sorteado.
 void MovPc(tPartida *partida, tMovimiento * movimiento)
 {
     //op va a ser una variable booleana que decida si se busca la menor cantidad de botones o la mayor
