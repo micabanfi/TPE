@@ -10,8 +10,8 @@ int hacerjugada(tPartida *partida,tMovimiento * movimiento );
 int HayJugada(tPartida * partida);
 int ExisteTablero(const char* filename);
 int ExisteArchivo(const char* filename);
-int Maximo (tPartida * partida,tMovimiento * tabla);
-int Minimo (tPartida * partida,tMovimiento * tabla);
+void Maximo (tPartida * partida,tMovimiento * movimiento);
+void Minimo (tPartida * partida,tMovimiento * movimiento);
 
 int AbrirTablero(tPartida* partida)
 {
@@ -373,14 +373,19 @@ int InvalidMove(tPartida* partida, tMovimiento* coordenadas)
 
 //Se ingresan una estructura tPartida con los datos de la partida y un puntero de movimientos
 //En el arregglo de tmovimientos se guardaran los posibles movimientos, con la mayor cantidad de botones cortados.
-int Maximo(tPartida * partida,tMovimiento * tabla)
+void Maximo(tPartida * partida,tMovimiento * movimiento)
 {
-  int F1,C1,df,dc,max=2,contmax=0,cont=0, posfx, posfy;
+int F1,C1,df,dc,max=2,contmax=0,cont=0, posfx, posfy,elegida;
   //reservo memoria para posiciones de COls Final
   //  posfx y posfy son punteros a las direcciones finales
   //  contmax es el contado del listado de maximos
   /*Cont, cuenta el numero de botones en una linea*/
   /*max, señala la cantidad maxima de botones. Inicializa en 1, porque seguro que hay movimiento*/
+  //elegida es un aleatorio entre 0 y la dimension del vector-1 que determina la opcion elegida
+  //en tabla se guardan los posibles movimientos a realizar
+  tMovimiento * tabla;
+  tabla=malloc(sizeof(tMovimiento));
+  
   for (F1=0;F1<(partida->dim); F1++)//Recorro todas las filas
   {
     for (C1=0; C1<(partida->dim); C1++)//Recorro todas las columnas
@@ -421,14 +426,25 @@ int Maximo(tPartida * partida,tMovimiento * tabla)
     }
   }
   tabla=realloc(tabla,(contmax)*sizeof(tMovimiento));
-  return contmax;
+  elegida= aleatorio(0,(contmax-1));
+  movimiento->F1=tabla[elegida].F1;
+  movimiento->C1=tabla[elegida].C1;
+  movimiento->F2=tabla[elegida].F2;
+  movimiento->C2=tabla[elegida].C2;
 }
 
 //Se ingresan una estructura tPartida con los datos de la partida y un puntero de movimientos
 //En el arregglo de tmovimientos se guardaran los posibles movimientos, con la menor cantidad de botones cortados.
-int Minimo(tPartida * partida,tMovimiento * tabla)
+void Minimo(tPartida * partida,tMovimiento * movimiento)
 {
   int F1,C1,df,dc,cont=0,salto=0;
+  // Cont cuenta la cantidad de posibles movimientos
+  //Salto determina la cantidad de saltos hasta el boton del mismo color mas cercano
+  //elegida es un aleatorio entre 0 y la dimension del vector-1 que determina la opcion elegida
+  //elegida es un aleatorio entre 0 y la dimension del vector-1 que determina la opcion elegida
+  //en tabla se guardan los posibles movimientos a realizar
+  tMovimiento * tabla;
+  tabla=malloc(sizeof(tMovimiento));
   for (F1=0;F1<(partida->dim); F1++)//Recorre todas las filas
   {
     for (C1=0; C1<(partida->dim); C1++)//recorre todas las columnas
@@ -458,35 +474,28 @@ int Minimo(tPartida * partida,tMovimiento * tabla)
     }
   }
   tabla=realloc(tabla,cont*sizeof(tMovimiento));
-  return cont;
+  elegida= aleatorio(0,(cont-1));
+  movimiento->F1=tabla[elegida].F1;
+  movimiento->C1=tabla[elegida].C1;
+  movimiento->F2=tabla[elegida].F2;
+  movimiento->C2=tabla[elegida].C2;
 }
 
 //Movpc recibe un puntero a Tpartida, y un puntero a Movimiento.
+//Sortea Maximo o Minimo. 
+//Maximo o minimo devuelven en movimiento, el movimiento ya sorteado.
 void MovPc(tPartida *partida, tMovimiento * movimiento)
 {
-    //opciones va a guardar la dimension del arreglo con los posibles movimientos
     //op va a ser una variable booleana que decida si se busca la menor cantidad de botones o la mayor
-    //elegida es un aleatorio entre 0 y la dimension del vector-1 que determina la opcion elegida
-    int opciones=0,elegida=0,op=0;
-    //en tabla se guardan los posibles movimientos a realizar
-    tMovimiento * tabla;
-    tabla=malloc(sizeof(tMovimiento));
+    int ,op=0;
     /*se sortea maximo o minimo*/
     op=aleatorio(0,1);
     if (op==0)
     {
-      opciones=Minimo(partida,tabla);
+      Minimo(partida,movimiento);
     }
     else
     {
-      opciones=Maximo(partida,tabla);
+      Maximo(partida,movimiento);
     }
-
-    elegida= aleatorio(0,(opciones-1));
-
-    //Una vez elegida la opcion de movimiento, seleccion de los posibles valores el valor en la posicion elegida.
-    movimiento->F1=tabla[elegida].F1;
-    movimiento->C1=tabla[elegida].C1;
-    movimiento->F2=tabla[elegida].F2;
-    movimiento->C2=tabla[elegida].C2;
 }
