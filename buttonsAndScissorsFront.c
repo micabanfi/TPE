@@ -15,7 +15,8 @@ void abrirPartida(tMovimiento *movimiento,tPartida *partida)
 {
     int resp=2;
     resp=AbrirTablero(partida);
-    while (resp==0){
+    while (resp==0)
+    {
         printf("Archivo no encontrado o corrupto.Ingrese nuevamente: ");
         partida->dim=pedirDim();
         resp=AbrirTablero(partida);
@@ -29,7 +30,7 @@ void dosplayers(tMovimiento *movimiento,tPartida* partida)
     int hayplay,botones=0,invmov=0,com=0;
 
     ImprimirTablero(partida);
-    hayplay=HayJugada(partida->dim,partida->tablero);
+    hayplay=HayJugada(partida);
     while(hayplay==0)
     {
         if (partida->jugadores==1 && partida->turno==2)
@@ -39,22 +40,21 @@ void dosplayers(tMovimiento *movimiento,tPartida* partida)
             printf("La computadora ya realizo su movimiento\n");
         }
         else
-        {com = ingrese_comando(movimiento,partida);
-        invmov=InvalidMove(partida,movimiento);
-
-        while (invmov!=0 && com==0)
         {
+          com = ingrese_comando(movimiento,partida);
+          invmov=InvalidMove(partida,movimiento);
+
+          while (invmov!=0 && com==0)
+          {
             errores(invmov);
             com = ingrese_comando(movimiento,partida);
             invmov=InvalidMove(partida,movimiento);
-        }
+          }
         }
         if (invmov == 0 && com==0)
         {
             botones=hacerjugada(partida,movimiento);
         }
-
-
         if (com == 0)
         {
            if(partida->turno==1)
@@ -69,7 +69,7 @@ void dosplayers(tMovimiento *movimiento,tPartida* partida)
             }
 
         ImprimirTablero(partida);
-        hayplay=HayJugada(partida->dim,partida->tablero);
+        hayplay=HayJugada(partida);
         }
     }
     if(partida->turno==1)
@@ -134,7 +134,7 @@ void ImprimirTablero(tPartida* partida)
     for (int k = 0; k < (partida->dim); ++k)
         printf("\t");
     printf("\t/\n\n");
-    
+
     printf("Turno jugador %d \n",partida->turno);
 }
 
@@ -178,6 +178,7 @@ int ingrese_comando(tMovimiento * movimiento, tPartida *partida)
                 printf("Error! Comando incorrecto, ingrese nuevamente: ");
             }
     }
+
 
   return 0;
 }
@@ -313,21 +314,11 @@ void quit(tMovimiento *movimiento,tPartida *partida)
     }
 }
 
-int main(){
+
+int main()
+{
     tPartida partida;
     tMovimiento movimiento;
-
-    /*char* nombrearchivo="matriz1";
-    partida.turno=2;
-    partida.dim=5;
-    partida.tablero=crearMatriz(partida.dim);
-    llenarFila(partida.tablero[0], "ABCDE");
-    llenarFila(partida.tablero[1], "BA0ED");
-    llenarFila(partida.tablero[2], "CAEDE");
-    llenarFila(partida.tablero[3], "A0A0C");
-    llenarFila(partida.tablero[4], "A0B0C");
-    */
-
     menu();
     ingrese_comando(&movimiento,&partida);
     return 0;
