@@ -86,27 +86,24 @@ int CargarPartida(const char* filename, tPartida *partida)
 	snprintf(ubicacion, sizeof(ubicacion), "./%s", filename);
 	FILE* archivo = fopen(ubicacion, "rb");
 
-	int* aux=0;
-
-	fread(aux, sizeof(partida->jugadores), 1, archivo);
-	if (*aux != 0 || *aux != 1)
+	fread(&partida->jugadores, sizeof(partida->jugadores), 1, archivo);
+	if (partida->jugadores != 0 && partida->jugadores != 1)
 		return 0;
-	partida->jugadores=*aux;
 
-	fread(aux, sizeof(partida->turno), 1, archivo);
-	if (*aux != 1 || *aux != 2)
+	fread(&partida->turno, sizeof(partida->turno), 1, archivo);
+	if (partida->turno != 1 && partida->turno != 2)
 		return 0;
-	partida->turno=*aux;
 
-	fread(aux, sizeof(partida->dim), 1, archivo);
-	if (*aux < 5 || *aux > 30)
+	fread(&partida->dim, sizeof(partida->dim), 1, archivo);
+	if (partida->dim < 5 || partida->dim > 30)
 		return 0;
-	partida->dim=*aux;
 
 	partida->tablero=crearMatriz(partida->dim);
 	for (int i = 0; i < (partida->dim); ++i)
 		for (int j = 0; j < (partida->dim); ++j)
+		{
 			partida->tablero[i][j]=fgetc(archivo);
+		}
 	if (fgetc(archivo) != EOF)
 	{
 		return 0;
