@@ -469,7 +469,7 @@ void Minimo(tPartida * partida,tMovimiento * movimiento)
               }
             }
           }
-	      }
+	}
       }
     }
   }
@@ -487,7 +487,7 @@ void Minimo(tPartida * partida,tMovimiento * movimiento)
 void MovPc(tPartida *partida, tMovimiento * movimiento)
 {
     //op va a ser una variable booleana que decida si se busca la menor cantidad de botones o la mayor
-    int ,op=0;
+    int op=0;
     /*se sortea maximo o minimo*/
     op=aleatorio(0,1);
     if (op==0)
