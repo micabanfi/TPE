@@ -157,8 +157,10 @@ int ingrese_comando(tMovimiento * movimiento, tPartida *partida)
             if(strncmp(comando, "save ", 5)==0 && comando[5]!=0)
             {
                 sscanf(comando,"save %s",nombre_partida);
-                GuardarPartida(nombre_partida,partida);
-                printf("\nLa partida se guardo exitosamente!\n");
+                if (GuardarPartida(nombre_partida,partida))
+                    printf("\nLa partida se guardo exitosamente!\n");
+                else
+                    printf("Por favor no utilize ese nombre. Intente con otro que no sea AxA.\n");
                 return 1;
             }
             else if (strncmp(comando, "quit", 4)==0 && comando[4]==0)
@@ -175,7 +177,6 @@ int ingrese_comando(tMovimiento * movimiento, tPartida *partida)
                 printf("Error! Comando incorrecto, ingrese nuevamente: ");
             }
     }
-
   return 0;
 }
 
@@ -184,7 +185,7 @@ int pedirDim()
     int nivel=0;
     char nivel2;
     scanf("%d%c",&nivel,&nivel2);
-	while ( nivel< 5 || nivel>30 || isdigit(nivel)!=0 || isspace(nivel2)==0)
+    while ( nivel< 5 || nivel>30 || isdigit(nivel)!=0 || isspace(nivel2)==0)
     {
       printf("Nivel inexistente, ingrese un nivel valido (Entre 5 y 30): ");
       scanf("%d%c",&nivel,&nivel2);
@@ -220,10 +221,13 @@ void quit(tMovimiento *movimiento,tPartida *partida)
                     printf("Ingrese el nombre del archivo: ");
                     error2=1;
                     scanf("%s",nombre_partida);
-                    GuardarPartida(nombre_partida,partida);
-                    printf("\nSu partida se guardo exitosamente.... Gracias por jugar!\n\n");
-                    exit(9);
-
+                    if (GuardarPartida(nombre_partida,partida))
+                    {
+                        printf("\nSu partida se guardo exitosamente.... Gracias por jugar!\n\n");
+                        exit(9);
+                    }
+                    else
+                        printf("Por favor no utilize ese nombre. Intente con otro que no sea AxA.\n");
                 }
                 else if('N'==toupper(c) && '\n'==d)
                 {
