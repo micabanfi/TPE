@@ -1,7 +1,9 @@
 #include <stdio.h>
 #include "CuTest.h"
 
-CuSuite * pruebasave();
+
+CuSuite * FrontTestSuite(void);
+CuSuite * BackTestSuite();
 
 void
 RunAllTests(void)
@@ -21,4 +23,3 @@ main(void)
 {
 	RunAllTests();
 }
-
