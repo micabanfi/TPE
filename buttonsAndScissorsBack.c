@@ -206,9 +206,18 @@ int ExisteTablero(const char* filename)
     return 0;
 }
 
-void GuardarPartida( const char* filename, tPartida* partida)
+int GuardarPartida( const char* filename, tPartida* partida)
 {
   //Sumo 3 para asegurarme de que entren el "./" y el 0
+  int aux1;
+  int aux2;
+  sscanf(filename, "%dx%d", &aux1, &aux2);
+
+  if ((aux1 == aux2) && (aux1 >= 5 && aux1 <= 30))
+  {
+    return 0;
+  }
+
   char ubicacion[strlen(filename)+3];
   snprintf(ubicacion, sizeof(ubicacion), "./%s", filename);
   FILE* archivo = fopen(ubicacion, "wb");
@@ -225,6 +234,7 @@ void GuardarPartida( const char* filename, tPartida* partida)
     for (int j = 0; j < (partida->dim); ++j)
       fwrite((&partida->tablero[i][j]), sizeof(char), 1, archivo);
   fclose(archivo);
+  return 1;
 }
 
 int hacerjugada(tPartida *partida,tMovimiento * movimiento )
