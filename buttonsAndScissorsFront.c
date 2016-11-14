@@ -181,17 +181,17 @@ int ingrese_comando(tMovimiento * movimiento, tPartida *partida)
 
 int pedirDim()
 {
-    int nivel[2]={0};
-    scanf("%d%c",&nivel[0],&nivel[1]);
-
-    while ( nivel[0]<5 || nivel[0]>30 || nivel[1]!='\n')
+    int nivel=0;
+    char nivel2;
+    scanf("%d%c",&nivel,&nivel2);
+	while ( nivel< 5 || nivel>30 || isdigit(nivel)!=0 || isspace(nivel2)==0)
     {
-        printf("\nNivel inexistente, ingrese un nivel valido (Entre 5 y 30): ");
-        scanf("%d%c",&nivel[0],&nivel[1]);
-        BORRA_BUFFER;
+      printf("Nivel inexistente, ingrese un nivel valido (Entre 5 y 30): ");
+      scanf("%d%c",&nivel,&nivel2);
+      BORRA_BUFFER;
     }
 
-    return nivel[0];
+    return nivel;
 }
 
 void quit(tMovimiento *movimiento,tPartida *partida)
