@@ -67,7 +67,7 @@ int ExisteArchivo(const char* filename);
 int ExisteTablero(const char* filename);
 
 /*Guarda los datos de la partida actual en el archivo binario filename. Lo sobreescribe si es necesario*/
-void GuardarPartida( const char* filename, tPartida* partida);
+int GuardarPartida( const char* filename, tPartida* partida);
 
 /*Realiza un movimiento sobre el tablero, borrando los botones que se cortaron*/
 int hacerjugada(tPartida *partida,tMovimiento * movimiento );
