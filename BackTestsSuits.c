@@ -303,7 +303,7 @@ CuAssertIntEquals_Msg(cuTest,mensaje1,esperado,actual);
 
 void FinalizaTest1(CuTest *cuTest)
 {
- int actual,esperado,actual2;
+ int actual,esperado;
   tPartida * partida;
   partida=malloc(sizeof (tPartida));
   TableroPrueba(partida);
@@ -511,4 +511,3 @@ int HayJugada(tPartida * partida)
   }
   return 1;//Si llego aca, es poque no encontro ficha. NO hay jugada
 }
-
