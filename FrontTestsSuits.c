@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "CuTest.h"
-
+#include <time.h>
 
 typedef struct{
     int turno;
@@ -26,9 +26,19 @@ int ingrese_comando(char *comando);
 void pruebaquit(CuTest * cuTest);
 void pruebacomando(CuTest * cuTest);
 void pruebaerror(CuTest * cuTest);
-void pruebaAbrirTablero(CuTest *cuTest);
+void pruebaAbrirTablero1(CuTest *cuTest);
+void pruebaAbrirTablero2(CuTest *cuTest);
+void pruebaGuardarPartida1(CuTest* cuTest);
+void pruebaGuardarPartida2(CuTest* cuTest);
+void pruebaCargarPartida(CuTest *cuTest);
 char** crearMatriz(int n);
-
+int AbrirTablero(tPartida* partida);
+int ingrese_comando(char *comando);
+int aleatorio(int izq, int der);
+int ExisteTablero(const char* filename);
+int ExisteArchivo(const char* filename);
+int GuardarPartida( const char* filename, tPartida* partida);
+int CargarPartida(const char* filename, tPartida *partida);
 
 CuSuite * FrontTestSuite(void)
 {
@@ -37,11 +47,16 @@ CuSuite * FrontTestSuite(void)
 	SUITE_ADD_TEST(cuSuite,pruebaquit);
 	SUITE_ADD_TEST(cuSuite,pruebacomando);
 	SUITE_ADD_TEST(cuSuite,pruebaerror);
-	SUITE_ADD_TEST(cuSuite,pruebaAbrirTablero);
+	SUITE_ADD_TEST(cuSuite,pruebaAbrirTablero1);
+    SUITE_ADD_TEST(cuSuite,pruebaAbrirTablero2);
+    SUITE_ADD_TEST(cuSuite,pruebaGuardarPartida1);
+    SUITE_ADD_TEST(cuSuite,pruebaGuardarPartida2);
+    SUITE_ADD_TEST(cuSuite,pruebaCargarPartida);
 
 	return cuSuite;
 }
 
+//Todos los del ingrese_comando
 void pruebasave(CuTest * cuTest)
 {
 	char * entrada = "save ";
@@ -79,36 +94,69 @@ void pruebaerror(CuTest * cuTest)
     CuAssertIntEquals_Msg(cuTest, mensaje, esperado, actual);
 }
 
-
-void pruebaAbrirTablero(CuTest *cuTest)
+void pruebaAbrirTablero1(CuTest *cuTest)
 {
-    char * entrada = "pruebatablero";
     tPartida * partida;
     partida=malloc(sizeof(tPartida));
     partida->dim=5;//defino esto para poder probarlo;
-	int actual = AbrirTablero(partida,entrada);
-	int esperado = 0;
+	int actual = AbrirTablero(partida);
+	int esperado = 1;
 	char * mensaje = "Existe archivo y no deberia existir";
 	CuAssertIntEquals_Msg(cuTest, mensaje, esperado, actual);
+}
 
+void pruebaAbrirTablero2(CuTest *cuTest)
+{
+    tPartida * partida;
+    partida=malloc(sizeof(tPartida));
+    partida->dim=18;//defino esto para poder probarlo;
+    int actual = AbrirTablero(partida);
+    int esperado = 0;
+    char * mensaje = "Existe archivo y no deberia existir";
+    CuAssertIntEquals_Msg(cuTest, mensaje, esperado, actual);
+}
+
+void pruebaGuardarPartida1(CuTest* cuTest)
+{
+    tPartida * partida;
+    partida=malloc(sizeof(tPartida));
+    partida->dim=5;
+    partida->tablero=crearMatriz(partida->dim);
+
+    int actual = GuardarPartida("5x5", partida);
+    int esperado = 0;
+    char * mensaje = "Guardó cuando no debería poder";
+    CuAssertIntEquals_Msg(cuTest, mensaje, esperado, actual);
+}
+
+void pruebaGuardarPartida2(CuTest* cuTest)
+{
+    tPartida * partida;
+    partida=malloc(sizeof(tPartida));
+    partida->dim=5;
+    partida->tablero=crearMatriz(partida->dim);
+
+    int actual = GuardarPartida("testSave", partida);
+    int esperado = 1;
+    char * mensaje = "No guardó cuando debería poder";
+    CuAssertIntEquals_Msg(cuTest, mensaje, esperado, actual);
 }
 
 void pruebaCargarPartida(CuTest *cuTest)
 {
-    char * entrada = "5x5";//prueba si existe este archivo,que se encuentra en la carpera
+    char * entrada = "testSave";//prueba si existe este archivo en el CWD
     tPartida * partida;
     partida=malloc(sizeof(tPartida));
 
 	int actual = CargarPartida(entrada,partida);
-	int esperado = 1;
+	int esperado = 0;
 	char * mensaje = "No carga la partida que deberia cargar";
 	CuAssertIntEquals_Msg(cuTest, mensaje, esperado, actual);
 }
 
-
-
-int AbrirTablero(tPartida* partida,char * filename )
+int AbrirTablero(tPartida* partida)
 {
+    char* filename;
     if (partida->dim < 10)
         filename=malloc(6*sizeof(char));
     else
@@ -153,8 +201,6 @@ int AbrirTablero(tPartida* partida,char * filename )
   }
   return 1;
 }
-
-
 
 int ingrese_comando(char *comando)
 {
@@ -301,4 +347,35 @@ int CargarPartida(const char* filename, tPartida *partida)
 
 	fclose(archivo);
 	return 1;
+}
+
+int GuardarPartida( const char* filename, tPartida* partida)
+{
+  //Sumo 3 para asegurarme de que entren el "./" y el 0
+  int aux1;
+  int aux2;
+  sscanf(filename, "%dx%d", &aux1, &aux2);
+
+  if ((aux1 == aux2) && (aux1 >= 5 && aux1 <= 30))
+  {
+    return 0;
+  }
+
+  char ubicacion[strlen(filename)+3];
+  snprintf(ubicacion, sizeof(ubicacion), "./%s", filename);
+  FILE* archivo = fopen(ubicacion, "wb");
+
+  // 0 = 2 players
+  // 1 = CPU
+  fwrite(&partida->jugadores, sizeof(partida->jugadores), 1, archivo);
+  // Modo
+  fwrite(&partida->turno, sizeof(partida->turno), 1, archivo);
+  // Dimension del tablero
+  fwrite(&partida->dim, sizeof(partida->dim), 1, archivo);
+  // Tablero
+  for (int i = 0; i < (partida->dim); ++i)
+    for (int j = 0; j < (partida->dim); ++j)
+      fwrite((&partida->tablero[i][j]), sizeof(char), 1, archivo);
+  fclose(archivo);
+  return 1;
 }
